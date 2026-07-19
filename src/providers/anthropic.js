@@ -24,11 +24,13 @@ export const AnthropicPlugin = {
         const id = block.id || null;
         const rawInput = block.input;
         let args = {};
+        let parseError = null;
         if (typeof rawInput === 'string') {
           try {
             args = JSON.parse(rawInput);
           } catch (e) {
             args = {};
+            parseError = e;
           }
         } else if (rawInput && typeof rawInput === 'object') {
           args = rawInput;
@@ -37,9 +39,10 @@ export const AnthropicPlugin = {
         results.push({
           provider: 'anthropic',
           name,
-          args,
+          args: args || {},
           id,
-          raw: block
+          raw: block,
+          parseError
         });
       }
     }

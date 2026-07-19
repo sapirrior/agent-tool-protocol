@@ -89,11 +89,41 @@ Output:
     name: 'readLocalFile',
     id: 'call_abc123',
     args: { path: 'package.json', encoding: 'utf8' },
-    raw: { ... } // Unmodified original tool call block
+    raw: { ... }, // Unmodified original tool call block
+    parseError: null // SyntaxError if JSON parsing of arguments failed, otherwise null
   }
 ]
 */
 ```
+
+### 4. Isolated Registries (Serverless & Multi-Tenant)
+
+In multi-tenant or serverless environments (e.g. AWS Lambda, Vercel Edge, Cloudflare Workers), global state is shared across requests. Rather than calling global functions like `registerPlugin()`, you can construct an isolated registry:
+
+```javascript
+import { createRegistry } from 'agent-tool-protocol';
+
+// Create a sandbox registry
+const registry = createRegistry();
+
+// Register a custom plugin in this instance
+registry.register(coherePlugin);
+
+// Retrieve plugins active in this registry
+const activePlugins = registry.list();
+```
+
+---
+
+## Bundler Optimization (Optional AJV)
+
+If you compile your code using a web bundler (like Webpack, Rollup, Vite, or Esbuild) and do not have `ajv` installed, the bundler might throw a build warning or error because of the dynamic `import('ajv')` inside the package.
+
+To fix this, configure your bundler to mark `ajv` as an **external dependency** (so it's ignored at build time):
+
+- **esbuild**: `--external:ajv`
+- **webpack**: `externals: { ajv: 'commonjs ajv' }`
+- **rollup / vite**: `external: ['ajv']`
 
 ---
 
@@ -118,8 +148,9 @@ const coherePlugin = {
       provider: 'cohere',
       name: tc.name,
       id: tc.id,
-      args: tc.parameters,
-      raw: tc
+      args: tc.parameters || {},
+      raw: tc,
+      parseError: null
     }));
   },
 

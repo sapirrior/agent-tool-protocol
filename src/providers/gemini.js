@@ -22,11 +22,13 @@ export const GeminiPlugin = {
           const name = part.functionCall.name || '';
           const rawArgs = part.functionCall.args;
           let args = {};
+          let parseError = null;
           if (typeof rawArgs === 'string') {
             try {
               args = JSON.parse(rawArgs);
             } catch (e) {
               args = {};
+              parseError = e;
             }
           } else if (rawArgs && typeof rawArgs === 'object') {
             args = rawArgs;
@@ -35,9 +37,10 @@ export const GeminiPlugin = {
           results.push({
             provider: 'gemini',
             name,
-            args,
+            args: args || {},
             id: null,
-            raw: part
+            raw: part,
+            parseError
           });
         }
       }
@@ -48,11 +51,13 @@ export const GeminiPlugin = {
       const name = raw.functionCall.name || '';
       const rawArgs = raw.functionCall.args;
       let args = {};
+      let parseError = null;
       if (typeof rawArgs === 'string') {
         try {
           args = JSON.parse(rawArgs);
         } catch (e) {
           args = {};
+          parseError = e;
         }
       } else if (rawArgs && typeof rawArgs === 'object') {
         args = rawArgs;
@@ -61,9 +66,10 @@ export const GeminiPlugin = {
       results.push({
         provider: 'gemini',
         name,
-        args,
+        args: args || {},
         id: null,
-        raw: raw
+        raw: raw,
+        parseError
       });
     }
 

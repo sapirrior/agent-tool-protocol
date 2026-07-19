@@ -69,5 +69,6 @@ test('OpenAI plugin parser safety', () => {
   assert.strictEqual(parsed.length, 1);
   assert.strictEqual(parsed[0].name, 'brokenArgs');
   assert.deepStrictEqual(parsed[0].args, {});
+  assert.ok(parsed[0].parseError instanceof SyntaxError);
   assert.ok(parsed[0].raw);
 });

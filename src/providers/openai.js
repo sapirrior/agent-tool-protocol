@@ -20,11 +20,13 @@ export const OpenAiPlugin = {
         const id = call.id || null;
         const rawArgs = call.function?.arguments;
         let args = {};
+        let parseError = null;
         if (typeof rawArgs === 'string') {
           try {
             args = JSON.parse(rawArgs);
           } catch (e) {
             args = {};
+            parseError = e;
           }
         } else if (rawArgs && typeof rawArgs === 'object') {
           args = rawArgs;
@@ -33,9 +35,10 @@ export const OpenAiPlugin = {
         results.push({
           provider: 'openai',
           name,
-          args,
+          args: args || {},
           id,
-          raw: call
+          raw: call,
+          parseError
         });
       }
     }
