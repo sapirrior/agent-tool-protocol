@@ -3,6 +3,22 @@
 import { validateSchema } from '../schema/validate.js';
 import { listPlugins } from './registry.js';
 
+/**
+ * Defines a tool once and compiles its parameters schema.
+ * Supports standard JSON Schema properties or flat properties shorthand format.
+ *
+ * @param {Object} config - The tool configuration.
+ * @param {string} config.name - The unique name of the tool.
+ * @param {string} config.description - A description of what the tool does.
+ * @param {Object} config.parameters - Standard JSON Schema or shorthand flat properties map.
+ * @param {Object} [config.metadata] - Passthrough provider-specific options.
+ * @returns {Object} The compiled Tool Definition object.
+ * @property {string} name - Unique name of the tool.
+ * @property {string} description - Tool description.
+ * @property {Object} parameters - The compiled strict JSON Schema.
+ * @property {Object} metadata - Optional metadata hints.
+ * @property {function(string): unknown} emit - Method to generate provider-specific spec configurations.
+ */
 export function defineTool(config) {
   if (!config.name || typeof config.name !== 'string') {
     throw new Error('Tool name is required and must be a string');
@@ -52,6 +68,11 @@ export function defineTool(config) {
     parameters: parametersSchema,
     metadata: config.metadata || {},
 
+    /**
+     * Convert this tool's compiled schema into the format expected by the specified provider.
+     * @param {string} providerName - Name of the registered provider plugin (e.g. 'openai', 'anthropic', 'gemini').
+     * @returns {unknown} Spec format output expected by the provider SDK.
+     */
     emit(providerName) {
       const plugins = listPlugins();
       const plugin = plugins.find(p => p.name === providerName);
