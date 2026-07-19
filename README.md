@@ -6,7 +6,7 @@ ATP defines common shapes and exports a minimal runtime without locking you into
 
 ## Features
 
-- **Write Once, Emit Anywhere:** Define tools using standard JSON Schema (or flat properties shorthand) and emit specs for **OpenAI**, **Anthropic**, and **Google Gemini**.
+- **Write Once, Emit Anywhere:** Define tools using standard JSON Schema (or flat properties shorthand) and emit specs for **OpenAI**, **Anthropic**, **Google Gemini**, **xAI Grok**, and **llama.cpp**.
 - **Universal Parser:** Normalizes raw API responses from any provider into a consistent array of tool calls.
 - **Strict Validation:** Optional runtime checking of JSON Schemas using `ajv` during definition.
 - **Provider Plugin Extensibility:** Easily register custom providers (e.g. Cohere, Mistral) without modifying the library.
@@ -66,6 +66,12 @@ const anthropicSpec = readLocalFile.emit('anthropic');
 // Google Gemini
 const geminiSpec = readLocalFile.emit('gemini');
 // Result: { name: 'readLocalFile', description: ..., parametersJsonSchema: ... }
+
+// xAI Grok
+const grokSpec = readLocalFile.emit('grok');
+
+// llama.cpp
+const llamaSpec = readLocalFile.emit('llama.cpp');
 ```
 
 ### 3. Parse Tool Calls Universally
