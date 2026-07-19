@@ -1,0 +1,17 @@
+{
+  "name": "agent-tool-protocol",
+  "version": "1.0.0",
+  "description": "Lightweight, in-process AI tool schema and response parser",
+  "main": "./src/index.js",
+  "type": "module",
+  "scripts": {
+    "test": "node --test tests/unit/*.test.js tests/providers/*.test.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@google/genai": "^2.12.0",
+    "openai": "^6.48.0"
+  }
+}
